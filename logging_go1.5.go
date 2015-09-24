@@ -12,6 +12,7 @@ func (this *Logger) Output(calldepth int, s string) error {
 	if this == nil {
 		return log.Output(calldepth, s)
 	}
+	this.Calls++
 	return this.Logger.Output(calldepth, s)
 }
 

@@ -38,6 +38,15 @@ func TestLoggingWithLoggerCapturesOutput(t *testing.T) {
 	assertions.New(t).So(out.Len(), should.Equal, 0)
 }
 
+func TestLogCallsAreCounted(t *testing.T) {
+	thing := new(ThingUnderTest)
+	thing.log = Capture()
+	for x := 0; x < 10; x++ {
+		thing.Action()
+	}
+	assertions.New(t).So(thing.log.Calls, should.Equal, 10)
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 
 type ThingUnderTest struct {

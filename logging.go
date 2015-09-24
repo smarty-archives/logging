@@ -19,8 +19,10 @@ import (
 // to be the behavior in production. In testing, set the field to a non-nil
 // instance of a *Logger to record log statements for later inspection.
 type Logger struct {
-	Log *bytes.Buffer
 	*log.Logger
+
+	Log   *bytes.Buffer
+	Calls int
 }
 
 // Capture creates a new *Logger instance with an internal buffer. The prefix
@@ -40,6 +42,7 @@ func (this *Logger) Fatal(v ...interface{}) {
 	if this == nil {
 		log.Fatal(v...)
 	} else {
+		this.Calls++
 		this.Logger.Fatal(v...)
 	}
 }
@@ -49,6 +52,7 @@ func (this *Logger) Fatalf(format string, v ...interface{}) {
 	if this == nil {
 		log.Fatalf(format, v...)
 	} else {
+		this.Calls++
 		this.Logger.Fatalf(format, v...)
 	}
 }
@@ -58,6 +62,7 @@ func (this *Logger) Fatalln(v ...interface{}) {
 	if this == nil {
 		log.Fatalln(v...)
 	} else {
+		this.Calls++
 		this.Logger.Fatalln(v...)
 	}
 }
@@ -75,6 +80,7 @@ func (this *Logger) Panic(v ...interface{}) {
 	if this == nil {
 		log.Panic(v...)
 	} else {
+		this.Calls++
 		this.Logger.Panic(v...)
 	}
 }
@@ -84,6 +90,7 @@ func (this *Logger) Panicf(format string, v ...interface{}) {
 	if this == nil {
 		log.Panicf(format, v...)
 	} else {
+		this.Calls++
 		this.Logger.Panicf(format, v...)
 	}
 }
@@ -93,6 +100,7 @@ func (this *Logger) Panicln(v ...interface{}) {
 	if this == nil {
 		log.Panicln(v...)
 	} else {
+		this.Calls++
 		this.Logger.Panicln(v...)
 	}
 }
@@ -102,6 +110,7 @@ func (this *Logger) Prefix() string {
 	if this == nil {
 		return log.Prefix()
 	}
+	this.Calls++
 	return this.Logger.Prefix()
 }
 
@@ -110,6 +119,7 @@ func (this *Logger) Print(v ...interface{}) {
 	if this == nil {
 		log.Print(v...)
 	} else {
+		this.Calls++
 		this.Logger.Print(v...)
 	}
 }
@@ -119,6 +129,7 @@ func (this *Logger) Printf(format string, v ...interface{}) {
 	if this == nil {
 		log.Printf(format, v...)
 	} else {
+		this.Calls++
 		this.Logger.Printf(format, v...)
 	}
 }
@@ -128,6 +139,7 @@ func (this *Logger) Println(v ...interface{}) {
 	if this == nil {
 		log.Println(v...)
 	} else {
+		this.Calls++
 		this.Logger.Println(v...)
 	}
 }
