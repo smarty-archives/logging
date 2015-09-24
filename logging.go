@@ -10,7 +10,6 @@ package logging
 
 import (
 	"bytes"
-	"io"
 	"log"
 )
 
@@ -69,14 +68,6 @@ func (this *Logger) Flags() int {
 		return log.Flags()
 	}
 	return this.Logger.Flags()
-}
-
-// Output -> log.Output
-func (this *Logger) Output(calldepth int, s string) error {
-	if this == nil {
-		return log.Output(calldepth, s)
-	}
-	return this.Logger.Output(calldepth, s)
 }
 
 // Panic -> log.Panic
@@ -147,15 +138,6 @@ func (this *Logger) SetFlags(flag int) {
 		log.SetFlags(flag)
 	} else {
 		this.Logger.SetFlags(flag)
-	}
-}
-
-// SetOutput -> log.SetOutput
-func (this *Logger) SetOutput(w io.Writer) {
-	if this == nil {
-		log.SetOutput(w)
-	} else {
-		this.Logger.SetOutput(w)
 	}
 }
 
