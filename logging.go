@@ -11,6 +11,8 @@ package logging
 import (
 	"bytes"
 	"log"
+	"fmt"
+	"os"
 )
 
 // Logger is meant be included as a pointer field on a struct. Leaving the
@@ -40,7 +42,8 @@ func Capture() *Logger {
 // Fatal -> log.Fatal
 func (this *Logger) Fatal(v ...interface{}) {
 	if this == nil {
-		log.Fatal(v...)
+		this.Output(3, fmt.Sprint(v...))
+		os.Exit(1)
 	} else {
 		this.Calls++
 		this.Logger.Fatal(v...)
@@ -50,7 +53,8 @@ func (this *Logger) Fatal(v ...interface{}) {
 // Fatalf -> log.Fatalf
 func (this *Logger) Fatalf(format string, v ...interface{}) {
 	if this == nil {
-		log.Fatalf(format, v...)
+		this.Output(3, fmt.Sprintf(format, v...))
+		os.Exit(1)
 	} else {
 		this.Calls++
 		this.Logger.Fatalf(format, v...)
@@ -60,7 +64,8 @@ func (this *Logger) Fatalf(format string, v ...interface{}) {
 // Fatalln -> log.Fatalln
 func (this *Logger) Fatalln(v ...interface{}) {
 	if this == nil {
-		log.Fatalln(v...)
+		this.Output(3, fmt.Sprintln(v...))
+		os.Exit(1)
 	} else {
 		this.Calls++
 		this.Logger.Fatalln(v...)
@@ -78,7 +83,9 @@ func (this *Logger) Flags() int {
 // Panic -> log.Panic
 func (this *Logger) Panic(v ...interface{}) {
 	if this == nil {
-		log.Panic(v...)
+		s := fmt.Sprint(v...)
+		this.Output(3, s)
+		panic(s)
 	} else {
 		this.Calls++
 		this.Logger.Panic(v...)
@@ -88,7 +95,9 @@ func (this *Logger) Panic(v ...interface{}) {
 // Panicf -> log.Panicf
 func (this *Logger) Panicf(format string, v ...interface{}) {
 	if this == nil {
-		log.Panicf(format, v...)
+		s := fmt.Sprintf(format, v...)
+		this.Output(3, s)
+		panic(s)
 	} else {
 		this.Calls++
 		this.Logger.Panicf(format, v...)
@@ -98,7 +107,9 @@ func (this *Logger) Panicf(format string, v ...interface{}) {
 // Panicln -> log.Panicln
 func (this *Logger) Panicln(v ...interface{}) {
 	if this == nil {
-		log.Panicln(v...)
+		s := fmt.Sprintln(v...)
+		this.Output(3, s)
+		panic(s)
 	} else {
 		this.Calls++
 		this.Logger.Panicln(v...)
@@ -117,7 +128,7 @@ func (this *Logger) Prefix() string {
 // Print -> log.Print
 func (this *Logger) Print(v ...interface{}) {
 	if this == nil {
-		log.Print(v...)
+		this.Output(3, fmt.Sprint(v...))
 	} else {
 		this.Calls++
 		this.Logger.Print(v...)
@@ -127,7 +138,7 @@ func (this *Logger) Print(v ...interface{}) {
 // Printf -> log.Printf
 func (this *Logger) Printf(format string, v ...interface{}) {
 	if this == nil {
-		log.Printf(format, v...)
+		this.Output(3, fmt.Sprintf(format, v...))
 	} else {
 		this.Calls++
 		this.Logger.Printf(format, v...)
@@ -137,7 +148,7 @@ func (this *Logger) Printf(format string, v ...interface{}) {
 // Println -> log.Println
 func (this *Logger) Println(v ...interface{}) {
 	if this == nil {
-		log.Println(v...)
+		this.Output(3, fmt.Sprintln(v...))
 	} else {
 		this.Calls++
 		this.Logger.Println(v...)
