@@ -3,15 +3,17 @@
 // it captures log calls in a buffer for later inspection. This can be
 // useful when needing to inspect or squelch log output from test code.
 // The main advantage to this approach is that it is not necessary to
-// provide a non-nil instance in 'contructor' functions or wireup for
+// provide a non-nil instance in 'constructor' functions or wireup for
 // production code. It is also still trivial to set a non-nil reference
 // in test code.
+// This library requires go 1.5+
 package logging
 
 import (
 	"bytes"
-	"log"
 	"fmt"
+	"io"
+	"log"
 	"os"
 )
 
@@ -37,6 +39,24 @@ func Capture() *Logger {
 		Log:    out,
 		Logger: log.New(out, log.Prefix(), log.Flags()),
 	}
+}
+
+// SetOutput -> log.SetOutput
+func (this *Logger) SetOutput(w io.Writer) {
+	if this == nil {
+		log.SetOutput(w)
+	} else {
+		this.Logger.SetOutput(w)
+	}
+}
+
+// Output -> log.Output
+func (this *Logger) Output(calldepth int, s string) error {
+	if this == nil {
+		return log.Output(calldepth, s)
+	}
+	this.Calls++
+	return this.Logger.Output(calldepth, s)
 }
 
 // Fatal -> log.Fatal

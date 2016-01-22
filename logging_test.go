@@ -54,5 +54,5 @@ type ThingUnderTest struct {
 }
 
 func (this *ThingUnderTest) Action() {
-	this.log.Println("Hello, World!")
+	this.log.Printf("Hello, World!")
 }
