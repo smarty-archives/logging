@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -39,6 +40,14 @@ func Capture() *Logger {
 		Log:    out,
 		Logger: log.New(out, log.Prefix(), log.Flags()),
 	}
+}
+
+// Discard creates a new *Logger instance with its internal buffer set to
+// ioutil.Discard. This is useful if you want your production code to be
+// quiet but your test code to be verbose. In that case, use Discard()
+// in production code and Capture() in test code.
+func Discard() *Logger {
+	return &Logger{Logger: log.New(ioutil.Discard, "", 0)}
 }
 
 // SetOutput -> log.SetOutput
