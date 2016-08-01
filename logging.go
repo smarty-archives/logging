@@ -47,7 +47,10 @@ func Capture() *Logger {
 // quiet but your test code to be verbose. In that case, use Discard()
 // in production code and Capture() in test code.
 func Discard() *Logger {
-	return &Logger{Logger: log.New(ioutil.Discard, "", 0)}
+	return &Logger{
+		Log:    new(bytes.Buffer),
+		Logger: log.New(ioutil.Discard, "", 0),
+	}
 }
 
 // SetOutput -> log.SetOutput

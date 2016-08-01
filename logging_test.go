@@ -47,6 +47,21 @@ func TestLogCallsAreCounted(t *testing.T) {
 	assertions.New(t).So(thing.log.Calls, should.Equal, 10)
 }
 
+func TestLoggingWithDiscard(t *testing.T) {
+	out := new(bytes.Buffer)
+	log.SetOutput(out)
+	log.SetFlags(0)
+	defer log.SetOutput(os.Stdout)
+	defer log.SetFlags(log.LstdFlags)
+
+	thing := new(ThingUnderTest)
+	thing.log = Discard()
+	thing.Action()
+
+	assertions.New(t).So(thing.log.Log.Len(), should.Equal, 0)
+	assertions.New(t).So(out.Len(), should.Equal, 0)
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 
 type ThingUnderTest struct {
