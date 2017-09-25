@@ -71,36 +71,36 @@ func (this *Logger) Output(calldepth int, s string) error {
 	return this.Logger.Output(calldepth, s)
 }
 
-// Fatal -> log.Fatal
+// Fatal -> log.Fatal (except in testing it uses log.Print)
 func (this *Logger) Fatal(v ...interface{}) {
 	if this == nil {
 		this.Output(3, fmt.Sprint(v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
-		this.Logger.Fatal(v...)
+		this.Logger.Print(v...)
 	}
 }
 
-// Fatalf -> log.Fatalf
+// Fatalf -> log.Fatalf (except in testing it uses log.Printf)
 func (this *Logger) Fatalf(format string, v ...interface{}) {
 	if this == nil {
 		this.Output(3, fmt.Sprintf(format, v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
-		this.Logger.Fatalf(format, v...)
+		this.Logger.Printf(format, v...)
 	}
 }
 
-// Fatalln -> log.Fatalln
+// Fatalln -> log.Fatalln (except in testing it uses log.Println)
 func (this *Logger) Fatalln(v ...interface{}) {
 	if this == nil {
 		this.Output(3, fmt.Sprintln(v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
-		this.Logger.Fatalln(v...)
+		this.Logger.Println(v...)
 	}
 }
 
