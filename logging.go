@@ -53,6 +53,11 @@ func Discard() *Logger {
 	}
 }
 
+// New -> log.New
+func New(out io.Writer, prefix string, flag int) *log.Logger {
+	return log.New(out, prefix, flag)
+}
+
 // SetOutput -> log.SetOutput
 func (this *Logger) SetOutput(w io.Writer) {
 	if this == nil {
