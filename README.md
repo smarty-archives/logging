@@ -7,7 +7,7 @@ corresponding functions in the standard log package. When not nil, it captures
 log calls in a buffer for later inspection. This can be useful when needing to
 inspect or squelch log output from test code. The main advantage to this
 approach is that it is not necessary to provide a non-nil instance in
-'contructor' functions or wireup for production code. It is also still trivial
+'constructor' functions or wireup for production code. It is also still trivial
 to set a non-nil reference in test code.
 
 ## Usage
