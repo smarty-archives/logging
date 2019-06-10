@@ -74,7 +74,7 @@ func (this *Logger) Output(calldepth int, s string) error {
 // Fatal -> log.Fatal (except in testing it uses log.Print)
 func (this *Logger) Fatal(v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprint(v...))
+		_ = this.Output(3, fmt.Sprint(v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
@@ -85,7 +85,7 @@ func (this *Logger) Fatal(v ...interface{}) {
 // Fatalf -> log.Fatalf (except in testing it uses log.Printf)
 func (this *Logger) Fatalf(format string, v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprintf(format, v...))
+		_ = this.Output(3, fmt.Sprintf(format, v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
@@ -96,7 +96,7 @@ func (this *Logger) Fatalf(format string, v ...interface{}) {
 // Fatalln -> log.Fatalln (except in testing it uses log.Println)
 func (this *Logger) Fatalln(v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprintln(v...))
+		_ = this.Output(3, fmt.Sprintln(v...))
 		os.Exit(1)
 	} else {
 		this.Calls++
@@ -116,7 +116,7 @@ func (this *Logger) Flags() int {
 func (this *Logger) Panic(v ...interface{}) {
 	if this == nil {
 		s := fmt.Sprint(v...)
-		this.Output(3, s)
+		_ = this.Output(3, s)
 		panic(s)
 	} else {
 		this.Calls++
@@ -128,7 +128,7 @@ func (this *Logger) Panic(v ...interface{}) {
 func (this *Logger) Panicf(format string, v ...interface{}) {
 	if this == nil {
 		s := fmt.Sprintf(format, v...)
-		this.Output(3, s)
+		_ = this.Output(3, s)
 		panic(s)
 	} else {
 		this.Calls++
@@ -140,7 +140,7 @@ func (this *Logger) Panicf(format string, v ...interface{}) {
 func (this *Logger) Panicln(v ...interface{}) {
 	if this == nil {
 		s := fmt.Sprintln(v...)
-		this.Output(3, s)
+		_ = this.Output(3, s)
 		panic(s)
 	} else {
 		this.Calls++
@@ -160,7 +160,7 @@ func (this *Logger) Prefix() string {
 // Print -> log.Print
 func (this *Logger) Print(v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprint(v...))
+		_ = this.Output(3, fmt.Sprint(v...))
 	} else {
 		this.Calls++
 		this.Logger.Print(v...)
@@ -170,7 +170,7 @@ func (this *Logger) Print(v ...interface{}) {
 // Printf -> log.Printf
 func (this *Logger) Printf(format string, v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprintf(format, v...))
+		_ = this.Output(3, fmt.Sprintf(format, v...))
 	} else {
 		this.Calls++
 		this.Logger.Printf(format, v...)
@@ -180,7 +180,7 @@ func (this *Logger) Printf(format string, v ...interface{}) {
 // Println -> log.Println
 func (this *Logger) Println(v ...interface{}) {
 	if this == nil {
-		this.Output(3, fmt.Sprintln(v...))
+		_ = this.Output(3, fmt.Sprintln(v...))
 	} else {
 		this.Calls++
 		this.Logger.Println(v...)
