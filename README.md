@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/smartystreets/logging.svg?branch=master)](https://travis-ci.org/smartystreets/logging)
+
 # logging
 --
     import "github.com/smartystreets/logging"
