@@ -6,7 +6,6 @@
 // provide a non-nil instance in 'constructor' functions or wireup for
 // production code. It is also still trivial to set a non-nil reference
 // in test code.
-// This library requires go 1.5+
 package logging
 
 import (
@@ -30,15 +29,18 @@ type Logger struct {
 	Calls int
 }
 
-// Capture creates a new *Logger instance with an internal buffer. The prefix
-// and flags default to the values of log.Prefix() and log.Flags(), respectively.
-// This function is meant to be called from test code. See the godoc for the
-// Logger struct for details.
-func Capture() *Logger {
+// Capture creates a new *Logger instance with a multi writer containing an
+// internal buffer as well as any other writers provided as arguments. The
+// prefix and flags default to the values of log.Prefix() and log.Flags(),
+// respectively. This function is meant to be called from test code. See the
+// godoc of the Logger struct for details.
+func Capture(writers ...io.Writer) *Logger {
 	out := new(bytes.Buffer)
+	writers = append(writers, out)
+	multi := io.MultiWriter(writers...)
 	return &Logger{
 		Log:    out,
-		Logger: log.New(out, log.Prefix(), log.Flags()),
+		Logger: log.New(multi, log.Prefix(), log.Flags()),
 	}
 }
 

@@ -38,6 +38,29 @@ func TestLoggingWithLoggerCapturesOutput(t *testing.T) {
 	assertions.New(t).So(out.Len(), should.Equal, 0)
 }
 
+func TestLoggingWithLoggerCapturesOutputInAllProvidedWriters(t *testing.T) {
+	out0 := new(bytes.Buffer)
+	out1 := new(bytes.Buffer)
+	out2 := new(bytes.Buffer)
+	log.SetOutput(out0)
+	log.SetFlags(0)
+	defer log.SetOutput(os.Stdout)
+	defer log.SetFlags(log.LstdFlags)
+
+	thing := new(ThingUnderTest)
+	thing.log = Capture(out1, out2)
+	thing.Action()
+
+	log0 := thing.log.Log.String()
+	log1 := out1.String()
+	log2 := out2.String()
+
+	assertions.New(t).So(log0, should.Equal, "Hello, World!\n")
+	assertions.New(t).So(log1, should.Equal, "Hello, World!\n")
+	assertions.New(t).So(log2, should.Equal, "Hello, World!\n")
+	assertions.New(t).So(out0.Len(), should.Equal, 0)
+}
+
 func TestLogCallsAreCounted(t *testing.T) {
 	thing := new(ThingUnderTest)
 	thing.log = Capture()
