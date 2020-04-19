@@ -75,34 +75,34 @@ func (this *Logger) Output(calldepth int, s string) error {
 
 // Fatal -> log.Fatal (except in testing it uses log.Print)
 func (this *Logger) Fatal(v ...interface{}) {
+	s := fmt.Sprint(v...)
 	if this == nil {
-		_ = this.Output(3, fmt.Sprint(v...))
+		_ = this.Output(3, s)
 		os.Exit(1)
 	} else {
-		this.Calls++
-		this.Logger.Print(v...)
+		_ = this.Logger.Output(2, s)
 	}
 }
 
 // Fatalf -> log.Fatalf (except in testing it uses log.Printf)
 func (this *Logger) Fatalf(format string, v ...interface{}) {
+	s := fmt.Sprintf(format, v...)
 	if this == nil {
-		_ = this.Output(3, fmt.Sprintf(format, v...))
+		_ = this.Output(3, s)
 		os.Exit(1)
 	} else {
-		this.Calls++
-		this.Logger.Printf(format, v...)
+		_ = this.Logger.Output(2, s)
 	}
 }
 
 // Fatalln -> log.Fatalln (except in testing it uses log.Println)
 func (this *Logger) Fatalln(v ...interface{}) {
+	s := fmt.Sprintln(v...)
 	if this == nil {
-		_ = this.Output(3, fmt.Sprintln(v...))
+		_ = this.Output(3, s)
 		os.Exit(1)
 	} else {
-		this.Calls++
-		this.Logger.Println(v...)
+		_ = this.Logger.Output(2, s)
 	}
 }
 
@@ -110,83 +110,57 @@ func (this *Logger) Fatalln(v ...interface{}) {
 func (this *Logger) Flags() int {
 	if this == nil {
 		return log.Flags()
+	} else {
+		return this.Logger.Flags()
 	}
-	return this.Logger.Flags()
 }
 
 // Panic -> log.Panic
 func (this *Logger) Panic(v ...interface{}) {
-	if this == nil {
-		s := fmt.Sprint(v...)
-		_ = this.Output(3, s)
-		panic(s)
-	} else {
-		this.Calls++
-		this.Logger.Panic(v...)
-	}
+	s := fmt.Sprint(v...)
+	_ = this.Output(3, s)
+	panic(s)
 }
 
 // Panicf -> log.Panicf
 func (this *Logger) Panicf(format string, v ...interface{}) {
-	if this == nil {
-		s := fmt.Sprintf(format, v...)
-		_ = this.Output(3, s)
-		panic(s)
-	} else {
-		this.Calls++
-		this.Logger.Panicf(format, v...)
-	}
+	s := fmt.Sprintf(format, v...)
+	_ = this.Output(3, s)
+	panic(s)
 }
 
 // Panicln -> log.Panicln
 func (this *Logger) Panicln(v ...interface{}) {
-	if this == nil {
-		s := fmt.Sprintln(v...)
-		_ = this.Output(3, s)
-		panic(s)
-	} else {
-		this.Calls++
-		this.Logger.Panicln(v...)
-	}
+	s := fmt.Sprintln(v...)
+	_ = this.Output(3, s)
+	panic(s)
 }
 
 // Prefix -> log.Prefix
 func (this *Logger) Prefix() string {
 	if this == nil {
 		return log.Prefix()
+	} else {
+		return this.Logger.Prefix()
 	}
-	this.Calls++
-	return this.Logger.Prefix()
 }
 
 // Print -> log.Print
 func (this *Logger) Print(v ...interface{}) {
-	if this == nil {
-		_ = this.Output(3, fmt.Sprint(v...))
-	} else {
-		this.Calls++
-		this.Logger.Print(v...)
-	}
+	s := fmt.Sprint(v...)
+	_ = this.Output(3, s)
 }
 
 // Printf -> log.Printf
 func (this *Logger) Printf(format string, v ...interface{}) {
-	if this == nil {
-		_ = this.Output(3, fmt.Sprintf(format, v...))
-	} else {
-		this.Calls++
-		this.Logger.Printf(format, v...)
-	}
+	s := fmt.Sprintf(format, v...)
+	_ = this.Output(3, s)
 }
 
 // Println -> log.Println
 func (this *Logger) Println(v ...interface{}) {
-	if this == nil {
-		_ = this.Output(3, fmt.Sprintln(v...))
-	} else {
-		this.Calls++
-		this.Logger.Println(v...)
-	}
+	s := fmt.Sprintln(v...)
+	_ = this.Output(3, s)
 }
 
 // SetFlags -> log.SetFlags

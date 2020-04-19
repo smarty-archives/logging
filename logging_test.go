@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"log"
 	"os"
+	"strings"
 	"testing"
-
-	"github.com/smartystreets/assertions"
-	"github.com/smartystreets/assertions/should"
 )
 
 func TestLoggingWithNilReferenceProducesTraditionalBehavior(t *testing.T) {
@@ -17,7 +15,8 @@ func TestLoggingWithNilReferenceProducesTraditionalBehavior(t *testing.T) {
 	thing := new(ThingUnderTest)
 	thing.Action()
 
-	assertions.New(t).So(out.String(), should.Equal, "Hello, World!\n")
+	assertCallDepthAccuracy(t, out)
+	assertCorrectLogMessage(t, out)
 }
 
 func TestLoggingWithLoggerCapturesOutput(t *testing.T) {
@@ -28,8 +27,9 @@ func TestLoggingWithLoggerCapturesOutput(t *testing.T) {
 	thing.log = Capture()
 	thing.Action()
 
-	assertions.New(t).So(thing.log.Log.String(), should.Equal, "Hello, World!\n")
-	assertNothingLoggedToStandardLogOutput(t, out)
+	assertCallDepthAccuracy(t, thing.log.Log)
+	assertCorrectLogMessage(t, thing.log.Log)
+	assertNothingLogged(t, out)
 }
 
 func TestLoggingWithLoggerCapturesOutputInAllProvidedWriters(t *testing.T) {
@@ -43,25 +43,25 @@ func TestLoggingWithLoggerCapturesOutputInAllProvidedWriters(t *testing.T) {
 	thing.log = Capture(out1, out2)
 	thing.Action()
 
-	log0 := thing.log.Log.String()
-	log1 := out1.String()
-	log2 := out2.String()
-
-	assertions.New(t).So(log0, should.Equal, "Hello, World!\n")
-	assertions.New(t).So(log1, should.Equal, "Hello, World!\n")
-	assertions.New(t).So(log2, should.Equal, "Hello, World!\n")
-	assertNothingLoggedToStandardLogOutput(t, out0)
+	assertCorrectLogMessage(t, thing.log.Log)
+	assertCorrectLogMessage(t, out1)
+	assertCorrectLogMessage(t, out2)
+	assertNothingLogged(t, out0)
 }
 
 func TestLogCallsAreCounted(t *testing.T) {
 	defer restore()
 
+	callCount := 10
+
 	thing := new(ThingUnderTest)
 	thing.log = Capture()
-	for x := 0; x < 10; x++ {
+
+	for x := 0; x < callCount; x++ {
 		thing.Action()
 	}
-	assertions.New(t).So(thing.log.Calls, should.Equal, 10)
+
+	assertLogCallsCounted(t, thing.log.Calls, callCount)
 }
 
 func TestLoggingWithDiscard(t *testing.T) {
@@ -72,12 +72,47 @@ func TestLoggingWithDiscard(t *testing.T) {
 	thing.log = Discard()
 	thing.Action()
 
-	assertions.New(t).So(thing.log.Log.Len(), should.Equal, 0)
-	assertNothingLoggedToStandardLogOutput(t, out)
+	assertNothingLogged(t, thing.log.Log)
+	assertNothingLogged(t, out)
 }
 
-func assertNothingLoggedToStandardLogOutput(t *testing.T, out *bytes.Buffer) bool {
-	return assertions.New(t).So(out.Len(), should.Equal, 0)
+func assertLogCallsCounted(t *testing.T, actual int, expected int) {
+	t.Helper()
+	if actual != expected {
+		t.Errorf("\n"+
+			"Expected: %d\n"+
+			"Actual:   %d",
+			expected, actual)
+	}
+}
+func assertCorrectLogMessage(t *testing.T, out *bytes.Buffer) {
+	t.Helper()
+	expected := "Hello, World!\n"
+	actual := out.String()
+	if !strings.HasSuffix(actual, expected) {
+		t.Errorf("\n"+
+			"Expected Suffix: %s\n"+
+			"Actual Log:      %s",
+			expected, actual)
+	}
+}
+func assertCallDepthAccuracy(t *testing.T, out *bytes.Buffer) {
+	t.Helper()
+	expected := "thing_under_test.go:8"
+	actual := out.String()
+	if !strings.HasPrefix(actual, expected) {
+		t.Errorf("\n"+
+			"Expected Prefix: %s\n"+
+			"Actual Log:      %s",
+			expected, actual)
+	}
+}
+func assertNothingLogged(t *testing.T, out *bytes.Buffer) {
+	t.Helper()
+	length := out.Len()
+	if length > 0 {
+		t.Errorf("Expected log to be empty, but it had a length of %d.", length)
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -90,16 +125,6 @@ func restore() {
 func prepare() *bytes.Buffer {
 	out := new(bytes.Buffer)
 	log.SetOutput(out)
-	log.SetFlags(0)
+	log.SetFlags(log.Lshortfile)
 	return out
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-type ThingUnderTest struct {
-	log *Logger
-}
-
-func (this *ThingUnderTest) Action() {
-	this.log.Printf("Hello, World!")
 }
